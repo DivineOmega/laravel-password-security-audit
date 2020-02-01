@@ -1,2 +1,3 @@
-# laravel-password-security-audit
-Automatically audits the passwords used by users of your Laravel app
+# Laravel Password Security Audit
+
+Audits the security of your user's passwords
