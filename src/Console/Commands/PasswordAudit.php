@@ -40,7 +40,7 @@ class PasswordAudit extends Command
      */
     public function handle()
     {
-        $passwords = file(__DIR__.'/../../resources/password-list.txt');
+        $passwords = file(__DIR__ . '/../../../resources/password-list.txt');
 
         $userModelClass = $this->argument('user-model');
 
