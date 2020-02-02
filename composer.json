@@ -20,5 +20,12 @@
         "psr-4": {
             "DivineOmega\\LaravelPasswordSecurityAudit\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DivineOmega\\LaravelPasswordSecurityAudit\\ServiceProvider"
+            ]
+        }
     }
 }
