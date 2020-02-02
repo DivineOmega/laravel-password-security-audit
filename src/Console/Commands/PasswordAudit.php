@@ -6,6 +6,7 @@ use DivineOmega\CliProgressBar\ProgressBar;
 use DIvineOmega\LaravelPasswordSecurityAudit\Objects\CrackedUser;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 
 class PasswordAudit extends Command
 {
@@ -89,6 +90,13 @@ class PasswordAudit extends Command
 
         $progressBar->complete();
 
-        dd($crackedUsers);
+        $crackedUsersCount = $crackedUsers->count();
+
+        $this->line($crackedUsersCount.' user password(s) were found to be weak.');
+
+        if ($crackedUsersCount > 0) {
+            $this->table(['key', 'password', 'hash'], $crackedUsers);
+        }
+
     }
 }
