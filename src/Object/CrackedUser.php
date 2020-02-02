@@ -2,7 +2,9 @@
 
 namespace DIvineOmega\LaravelPasswordSecurityAudit\Objects;
 
-class CrackedUser
+use Illuminate\Contracts\Support\Arrayable;
+
+class CrackedUser implements Arrayable
 {
     public $key;
     public $password;
@@ -13,5 +15,14 @@ class CrackedUser
         $this->key = $key;
         $this->password = $password;
         $this->hash = $hash;
+    }
+
+    public function toArray()
+    {
+        return [
+            'key' => $this->key,
+            'password' => $this->password,
+            'hash' => $this->hash,
+        ];
     }
 }
