@@ -14,7 +14,7 @@ class PasswordAudit extends Command
      *
      * @var string
      */
-    protected $signature = 'security:password-audit {--user-model=App\\User} {--password-field=password}';
+    protected $signature = 'security:password-audit {--user-model=\\App\\User} {--password-field=password}';
 
     /**
      * The console command description.
