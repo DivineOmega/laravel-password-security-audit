@@ -2,7 +2,7 @@
 
 namespace DivineOmega\LaravelPasswordSecurityAudit;
 
-use DIvineOmega\LaravelPasswordSecurityAudit\Console\Commands\PasswordAudit;
+use DivineOmega\LaravelPasswordSecurityAudit\Console\Commands\PasswordAudit;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider

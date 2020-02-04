@@ -1,12 +1,11 @@
 <?php
 
-namespace DIvineOmega\LaravelPasswordSecurityAudit\Console\Commands;
+namespace DivineOmega\LaravelPasswordSecurityAudit\Console\Commands;
 
 use DivineOmega\CliProgressBar\ProgressBar;
-use DIvineOmega\LaravelPasswordSecurityAudit\Objects\CrackedUser;
+use DivineOmega\LaravelPasswordSecurityAudit\Objects\CrackedUser;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User;
 
 class PasswordAudit extends Command
 {
