@@ -84,6 +84,8 @@ class PasswordAudit extends Command
                 $userIndex++;
 
                 foreach($passwords as $password) {
+                    $progressBar->setProgress("User ".$user->getKey().' / Checking: '.$password);
+
                     $hash = $user->$passwordField;
                     $passwordFound = password_verify($password, $hash);
 
