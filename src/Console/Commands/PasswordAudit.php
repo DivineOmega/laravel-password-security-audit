@@ -66,17 +66,19 @@ class PasswordAudit extends Command
             exit;
         }
 
+        $numPasswords = count($passwords);
+
         $crackedUsers = collect();
 
         $progressBar = new ProgressBar();
         $progressBar->setMaxProgress($numUsers * count($passwords));
         $progressBar->display();
 
-        $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar) {
+        $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar, $numPasswords) {
 
             /** @var Model $user */
-            foreach ($users as  $user) {
-                foreach($passwords as $i => $password) {
+            foreach ($users as $userIndex => $user) {
+                foreach($passwords as $password) {
                     $hash = $user->password;
                     $passwordFound = password_verify($password, $hash);
 
@@ -84,6 +86,8 @@ class PasswordAudit extends Command
                         $crackedUsers->push(
                             new CrackedUser($user->getKey(), $password, $hash)
                         );
+                        $progressBar->setProgress(($userIndex + 1) * $numPasswords);
+                        continue 2;
                     }
 
                     $progressBar->advance()->display();
