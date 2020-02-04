@@ -6,15 +6,20 @@ use Illuminate\Contracts\Support\Arrayable;
 
 class CrackedUser implements Arrayable
 {
-    public $key;
-    public $password;
-    public $hash;
+    private $key;
+    private $password;
+    private $hash;
 
     public function __construct($key, $password, $hash)
     {
         $this->key = $key;
         $this->password = $password;
         $this->hash = $hash;
+    }
+
+    public function getKey()
+    {
+        return $this->key;
     }
 
     public function toArray()

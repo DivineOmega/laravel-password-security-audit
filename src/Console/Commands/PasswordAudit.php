@@ -76,6 +76,12 @@ class PasswordAudit extends Command
             foreach($passwords as $password) {
                 /** @var Model $user */
                 foreach ($users as $user) {
+                    foreach ($crackedUsers as $crackedUser) {
+                        if ($user->getKey() === $crackedUser->key) {
+                            continue 2;
+                        }
+                    }
+
                     $hash = $user->password;
                     $passwordFound = password_verify($password, $hash);
 
