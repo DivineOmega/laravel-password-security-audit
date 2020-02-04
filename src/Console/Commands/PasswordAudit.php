@@ -14,7 +14,7 @@ class PasswordAudit extends Command
      *
      * @var string
      */
-    protected $signature = 'security:password-audit {user-model}';
+    protected $signature = 'security:password-audit {--user-model="App\\User"} {--password-field="password"}';
 
     /**
      * The console command description.
@@ -42,7 +42,8 @@ class PasswordAudit extends Command
     {
         $passwords = file(__DIR__ . '/../../../resources/password-list.txt', FILE_IGNORE_NEW_LINES);
 
-        $userModelClass = $this->argument('user-model');
+        $userModelClass = $this->option('user-model');
+        $passwordField = $this->option('password-field');
 
         if (!class_exists($userModelClass)) {
             $this->error('Specified user model is not a valid class.');
@@ -76,14 +77,14 @@ class PasswordAudit extends Command
 
         $userIndex = 0;
 
-        $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar, $userIndex, $numPasswords) {
+        $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar, $userIndex, $numPasswords, $passwordField) {
             /** @var Model $user */
             foreach ($users as $user) {
                 $progressBar->setProgress($userIndex * $numPasswords);
                 $userIndex++;
 
                 foreach($passwords as $password) {
-                    $hash = $user->password;
+                    $hash = $user->$passwordField;
                     $passwordFound = password_verify($password, $hash);
 
                     if ($passwordFound) {
