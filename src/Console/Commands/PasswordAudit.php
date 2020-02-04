@@ -80,7 +80,7 @@ class PasswordAudit extends Command
         $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar, $userIndex, $numPasswords, $passwordField) {
             /** @var Model $user */
             foreach ($users as $user) {
-                $progressBar->setProgress($userIndex * $numPasswords);
+                $progressBar->setProgress($userIndex * $numPasswords)->display();
                 $userIndex++;
 
                 foreach($passwords as $password) {
