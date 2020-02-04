@@ -107,7 +107,11 @@ class PasswordAudit extends Command
         $this->line($crackedUsersCount.' user password(s) were found to be weak.');
 
         if ($crackedUsersCount > 0) {
-            $this->table(['Key', 'Password', 'Hash'], $crackedUsers->toArray());
+            $this->table([
+                'Key ('.$userModel->getKeyName().')',
+                'Password',
+                'Hash'
+            ], $crackedUsers->toArray());
         }
 
     }
