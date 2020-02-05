@@ -6,6 +6,7 @@ use DivineOmega\CliProgressBar\ProgressBar;
 use DivineOmega\LaravelPasswordSecurityAudit\Objects\CrackedUser;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Async\Pool;
 
 class PasswordAudit extends Command
 {
@@ -80,23 +81,27 @@ class PasswordAudit extends Command
         $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar, $userIndex, $numPasswords, $passwordField) {
             /** @var Model $user */
             foreach ($users as $user) {
-                $progressBar->setProgress($userIndex * $numPasswords)->display();
+                $progressBar
+                    ->setMessage("User ".$user->getKey())
+                    ->setProgress($userIndex * $numPasswords)
+                    ->display();
+
                 $userIndex++;
 
+                $pool = Pool::create();
+                $hash = $user->$passwordField;
+
                 foreach($passwords as $password) {
-                    $progressBar->setMessage("User ".$user->getKey().' / Checking: '.str_pad($password, 12))->display();
-
-                    $hash = $user->$passwordField;
-                    $passwordFound = password_verify($password, $hash);
-
-                    if ($passwordFound) {
-                        $crackedUsers->push(
-                            new CrackedUser($user->getKey(), $password, $hash)
-                        );
-                        continue 2;
-                    }
-
-                    $progressBar->advance()->display();
+                    $pool->add(function () use ($password, $hash) {
+                        return password_verify($password, $hash);
+                    })->then(function($passwordFound) use ($crackedUsers, $user, $password, $hash, $progressBar) {
+                        if ($passwordFound) {
+                            $crackedUsers->push(
+                                new CrackedUser($user->getKey(), $password, $hash)
+                            );
+                        }
+                        $progressBar->advance()->display();
+                    });
                 }
 
             }
