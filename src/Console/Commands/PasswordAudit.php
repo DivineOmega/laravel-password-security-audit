@@ -87,9 +87,9 @@ class PasswordAudit extends Command
                     ->display();
 
                 $userIndex++;
+                $hash = $user->$passwordField;
 
                 $pool = Pool::create();
-                $hash = $user->$passwordField;
 
                 foreach($passwords as $password) {
                     $pool->add(function () use ($password, $hash) {
@@ -103,6 +103,8 @@ class PasswordAudit extends Command
                         $progressBar->advance()->display();
                     });
                 }
+
+                $pool->wait();
 
             }
 
