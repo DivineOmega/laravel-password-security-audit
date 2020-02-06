@@ -90,15 +90,17 @@ class PasswordAudit extends Command
                 $hash = $user->$passwordField;
 
                 $pool = Pool::create();
+                $pool->concurrency(20);
 
                 foreach($passwords as $password) {
                     $pool->add(function () use ($password, $hash) {
                         return password_verify($password, $hash);
-                    })->then(function($passwordFound) use ($crackedUsers, $user, $password, $hash, $progressBar) {
+                    })->then(function($passwordFound) use ($crackedUsers, $user, $password, $hash, $progressBar, $pool) {
                         if ($passwordFound) {
                             $crackedUsers->push(
                                 new CrackedUser($user->getKey(), $password, $hash)
                             );
+                            $pool->stop();
                         }
                         $progressBar->advance()->display();
                     });
