@@ -1,6 +1,6 @@
 # 🔏 Laravel Password Security Audit
 
-This package provides an Artisan command to audit the security of your user's passwords.
+This package provides an Artisan command to audit the security of your users' passwords.
 
 Laravel Password Security Audit works by executing a long running process that checks your users passwords against
 a list of over 10k commonly used weak passwords. When complete, it outputs a report of 
