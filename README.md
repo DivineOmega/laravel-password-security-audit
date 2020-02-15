@@ -1,4 +1,4 @@
-# Laravel Password Security Audit
+# 🔏 Laravel Password Security Audit
 
 This package provides an Artisan command to audit the security of your user's passwords.
 
