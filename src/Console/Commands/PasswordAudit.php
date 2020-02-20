@@ -89,7 +89,7 @@ class PasswordAudit extends Command
                 $userIndex++;
                 $hash = $user->$passwordField;
 
-                $password = (new DictionaryCracker())->crack($hash, function() use ($progressBar) {
+                $password = $cracker->crack($hash, function() use ($progressBar) {
                     $progressBar->advance()->display();
                 });
 
