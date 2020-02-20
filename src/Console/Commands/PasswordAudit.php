@@ -73,7 +73,7 @@ class PasswordAudit extends Command
         $crackedUsers = collect();
 
         $progressBar = new ProgressBar();
-        $progressBar->setMaxProgress($numUsers * $cracker->$numPasswords());
+        $progressBar->setMaxProgress($numUsers * $numPasswords);
         $progressBar->display();
 
         $userIndex = 0;
