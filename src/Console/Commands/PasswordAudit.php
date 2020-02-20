@@ -4,6 +4,7 @@ namespace DivineOmega\LaravelPasswordSecurityAudit\Console\Commands;
 
 use DivineOmega\CliProgressBar\ProgressBar;
 use DivineOmega\LaravelPasswordSecurityAudit\Objects\CrackedUser;
+use DivineOmega\PasswordCracker\Crackers\DictionaryCracker;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Async\Pool;
@@ -41,8 +42,6 @@ class PasswordAudit extends Command
      */
     public function handle()
     {
-        $passwords = file(__DIR__ . '/../../../resources/password-list.txt', FILE_IGNORE_NEW_LINES);
-
         $userModelClass = $this->option('user-model');
         $passwordField = $this->option('password-field');
 
@@ -89,24 +88,17 @@ class PasswordAudit extends Command
                 $userIndex++;
                 $hash = $user->$passwordField;
 
-                $pool = Pool::create();
-                $pool->concurrency(20);
+                $password = (new DictionaryCracker())->crack($hash, function($passwordBeingChecked) {
+                    echo 'Checking password '.$passwordBeingChecked.'...'.PHP_EOL;
+                });
 
-                foreach($passwords as $password) {
-                    $pool->add(function () use ($password, $hash) {
-                        return password_verify($password, $hash);
-                    })->then(function($passwordFound) use ($crackedUsers, $user, $password, $hash, $progressBar, $pool) {
-                        if ($passwordFound) {
-                            $crackedUsers->push(
-                                new CrackedUser($user->getKey(), $password, $hash)
-                            );
-                            $pool->stop();
-                        }
-                        $progressBar->advance()->display();
-                    });
+                if (!$password === null) {
+                    continue;
                 }
 
-                $pool->wait();
+                $crackedUsers->push(
+                    new CrackedUser($user->getKey(), $password, $hash)
+                );
 
             }
 
