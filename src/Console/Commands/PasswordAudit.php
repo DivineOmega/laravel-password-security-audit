@@ -67,17 +67,18 @@ class PasswordAudit extends Command
             exit;
         }
 
-        $numPasswords = count($passwords);
+        $cracker = new DictionaryCracker();
+        $numPasswords = $cracker->getPasswordCount();
 
         $crackedUsers = collect();
 
         $progressBar = new ProgressBar();
-        $progressBar->setMaxProgress($numUsers * count($passwords));
+        $progressBar->setMaxProgress($numUsers * $cracker->$numPasswords());
         $progressBar->display();
 
         $userIndex = 0;
 
-        $query->chunk(1000, function ($users) use ($passwords, $crackedUsers, $progressBar, $userIndex, $numPasswords, $passwordField) {
+        $query->chunk(1000, function ($users) use ($numPasswords, $crackedUsers, $progressBar, $userIndex, $cracker, $passwordField) {
             /** @var Model $user */
             foreach ($users as $user) {
                 $progressBar
@@ -88,11 +89,11 @@ class PasswordAudit extends Command
                 $userIndex++;
                 $hash = $user->$passwordField;
 
-                $password = (new DictionaryCracker())->crack($hash, function($passwordBeingChecked) {
-                    echo 'Checking password '.$passwordBeingChecked.'...'.PHP_EOL;
+                $password = (new DictionaryCracker())->crack($hash, function() use ($progressBar) {
+                    $progressBar->advance()->display();
                 });
 
-                if (!$password === null) {
+                if ($password === null) {
                     continue;
                 }
 
